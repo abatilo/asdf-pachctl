@@ -16,8 +16,27 @@ install() {
   mkdir -p "${bin_install_path}"
 
   echo "Downloading pachctl from ${download_url} to ${binary_path}"
-  curl -L "${download_url}" -o "${binary_path}"
-  chmod +x "${binary_path}"
+
+  if [ "$platform" == "linux_amd64" ]; then
+    curl -L "${download_url}" -o "${binary_path}.tgz"
+    pushd "$(dirname ${binary_path})" > /dev/null
+    tar -xzvf "${binary_path}.tgz"
+    mv "pachctl_${version}_${platform}/pachctl" ${binary_path}
+    rm -rf "pachctl_${version}_${platform}"
+    rm -rf "${binary_path}.tgz"
+    chmod +x "${binary_path}"
+    popd > /dev/null
+  fi
+  if [ "$platform" == "darwin_amd64" ]; then
+    curl -L "${download_url}" -o "${binary_path}.zip"
+    pushd "$(dirname ${binary_path})" > /dev/null
+    unzip "${binary_path}.tgz"
+    mv "pachctl_${version}_${platform}/pachctl" ${binary_path}
+    rm -rf "pachctl_${version}_${platform}"
+    rm -rf "${binary_path}.zip"
+    chmod +x "${binary_path}"
+    popd > /dev/null
+  fi
 }
 
 
